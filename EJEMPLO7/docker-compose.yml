@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+
+  #Servicio para la base de datos
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: my_database
+      MYSQL_USER: user
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - backend
+
+  #Servicio para la aplicación web
+  web:
+    image: nginx:alpine
+    depends_on:
+      - db
+    ports:
+      - "8080:80"
+    volumes:
+      - html_volume:/usr/share/nginx/html
+      - config_volume:/etc/nginx/conf.d
+    networks:
+      - frontend
+      - backend
+
+volumes:
+  html_volume:
+  config_volume:
+  db_data:
+
+networks:
+  frontend:
+  backend:
